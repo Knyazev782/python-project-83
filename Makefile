@@ -16,5 +16,5 @@ build:
 	./build.sh
 
 render-start:
-	. $HOME/.local/bin/env
+	. /opt/render/.local/bin/env
 	uv run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
