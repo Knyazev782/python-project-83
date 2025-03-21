@@ -17,6 +17,6 @@ build:
 
 render-start:
 	ls -la
-	ls -la $HOME/.local
-	ls -la $HOME/.local/bin
-	/opt/render/.local/bin/uv run gunicorn -w 5 -b 0.0.0.0:10000 page_analyzer:app
+	ls -la $(HOME)/.local
+	ls -la $(HOME)/.local/bin
+	$(HOME)/.local/bin/uv run gunicorn -w 5 -b 0.0.0.0:10000 page_analyzer:app
