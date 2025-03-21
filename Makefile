@@ -16,6 +16,7 @@ build:
 	./build.sh
 
 render-start:
+	which uv
 	ls -la
 	ls -la $(HOME)/.local
 	ls -la $(HOME)/.local/bin
