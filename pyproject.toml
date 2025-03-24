@@ -1,7 +1,7 @@
 [project]
 name = "hexlet-code"
 version = "0.1.0"
-description = "Page Analyzer project"
+description = "Page Analyzer"
 requires-python = ">=3.8.1"
 dependencies = [
     "flask>=2.0.0",
@@ -13,3 +13,6 @@ dependencies = [
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["page_analyzer"]
