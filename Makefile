@@ -17,4 +17,4 @@ build:
 
 render-start:
 	./build.sh
-	/opt/render/.local/bin/uv run gunicorn -w 5 -b 0.0.0.0:10000 page_analyzer:app
+	/home/vipknyaz1488/.local/bin/uv run gunicorn -w 5 -b 0.0.0.0:10000 page_analyzer:app
