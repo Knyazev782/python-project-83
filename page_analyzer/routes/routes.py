@@ -31,7 +31,7 @@ def process_url(url):
         return None
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST', 'HEAD'])
 def index():
     if request.method == 'GET':
         return render_template('index.html')
@@ -44,7 +44,7 @@ def index():
         url_id = process_url(url)
         if url_id is not None:
             return redirect(url_for('show_url', url_id=url_id))
-        return render_template('index.html')
+    return render_template('index.html')
 
 
 @app.route('/urls/<int:url_id>')
