@@ -15,14 +15,12 @@ class DatabaseConnection:
         except psycopg2.Error:
             raise Exception('Ошибка подключения к базе данных!')
 
-
     def __enter__(self):
         try:
             self.cursor = self.conn.cursor()
             return self.cursor
         except psycopg2.Error:
             raise Exception('Не удалось создать курсор!')
-
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:

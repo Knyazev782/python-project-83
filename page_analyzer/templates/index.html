@@ -1,16 +1,47 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My App</title>
-    <!-- Подключаем Bootstrap -->
-    <<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/lux/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container text-center">
-      <h1 class="mt-5">Анализатор страниц</h1>
-      <p class="lead">Hello, world!</p>
-    </div>
-  </body>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализатор страниц</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="/">Анализатор страниц</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/urls">Сайты</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        <h1>Анализатор страниц</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="post" action="/">
+            <div class="mb-3">
+                <label for="url" class="form-label">Сайт</label>
+                <input type="text" class="form-control" id="url" name="url" placeholder="https://www.example.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Проверить</button>
+        </form>
+    </main>
+    <footer class="bg-light py-3 mt-4">
+        <div class="container text-center">
+            <p>© 2025 Анализатор страниц</p>
+        </div>
+    </footer>
+</body>
 </html>
