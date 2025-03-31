@@ -3,18 +3,27 @@ import datetime
 import psycopg2
 
 
-def check_url_unique(url):
+def check_url_exists(url):
     with DatabaseConnection() as db:
         try:
             db.execute("SELECT 1 FROM urls WHERE name = %s;", (url,))
             result = db.fetchone()
-            if result is not None:
-                return True
-            else:
-                return False
-        except psycopg2.IntegrityError:
-            return
+            return result is not None
+        except psycopg2.Error:
+            return False
 
+
+def get_url_id(url):
+    with DatabaseConnection() as db:
+        try:
+            db.execute("SELECT id FROM urls WHERE name = %s;", (url,))
+            result = db.fetchone()
+            if result is not None:
+                return result[0]
+            else:
+                return None
+        except psycopg2.Error:
+            return None
 
 
 def add_url(url):
@@ -22,12 +31,32 @@ def add_url(url):
         try:
             db.execute("""
                 INSERT INTO urls (name, created_at)
-                VALUES (%s, %s)
-                RETURNING id;
+                VALUES (%s, %s);
             """, (url, datetime.datetime.now()))
-            result = db.fetchone()
-            url_id = result[0]
-            return url_id
+            return True
         except psycopg2.IntegrityError:
             print(f"URL {url} уже существует в нашей базе")
-            return
+            return False
+
+
+def get_url_by_id(url_id):
+    with DatabaseConnection() as db:
+        try:
+            db.execute("SELECT * FROM urls WHERE id = %s;", (url_id,))
+            result = db.fetchone()
+            if result is not None:
+                return result
+            else:
+                return None
+        except psycopg2.Error:
+            return None
+
+
+def get_urls():
+    with DatabaseConnection() as db:
+        try:
+            db.execute("SELECT * FROM urls ORDER BY created_at DESC;")
+            result = db.fetchall()
+            return result
+        except psycopg2.Error:
+            return None
