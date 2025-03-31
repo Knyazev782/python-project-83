@@ -44,7 +44,7 @@ def index():
         url_id = process_url(url)
         if url_id is not None:
             return redirect(url_for('show_url', url_id=url_id))
-    return render_template('index.html')
+    return redirect(url_for('list_urls'))
 
 
 @app.route('/urls/<int:url_id>')
