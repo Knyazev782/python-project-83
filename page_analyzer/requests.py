@@ -80,7 +80,8 @@ def get_checks_by_url_id(url_id):
             db.execute("SELECT id, created_at FROM url_checks "
                        "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
-            return result
+            return [(check[0], check[1].strftime('%Y-%m-%d %H:%M:%S')
+            if check[1] else None) for check in result]
         except psycopg2.Error:
             print('Ошибка при получении списка проверок')
             return []
@@ -93,7 +94,8 @@ def get_last_check_date(url_id):
                        "WHERE url_id = %s ORDER BY "
                        "created_at DESC LIMIT 1", (url_id,))
             result = db.fetchone()
-            return result[0] if result else None
+            return result[0].strftime('%Y-%m-%d %H:%M:%S') \
+                if result and result[0] else None
         except psycopg2.Error:
             print('Ошибка при выборе даты последней проверки')
             return None
