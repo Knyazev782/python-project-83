@@ -19,7 +19,6 @@ def process_url(url):
     if check_url_exists(url):
         flash('Страница уже существует')
         return None
-
     if add_url(url):
         url_id = get_url_id(url)
         if url_id is not None:
@@ -67,9 +66,9 @@ def list_urls():
         for url in urls:
             last_check = get_last_check_date(url[0])
             last_checks.append({'id': url[0],
-                           'name': url[1],
-                           'created_at': url[2],
-                           'last_check': last_check})
+                                'name': url[1],
+                                'created_at': url[2],
+                                'last_check': last_check})
     else:
         return render_template('urls.html', urls=[])
 
