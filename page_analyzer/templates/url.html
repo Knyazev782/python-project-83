@@ -20,7 +20,7 @@
 
     <main>
         <div class="container mt-5">
-            <h1>Сайт: {{ url.name }}</h1>
+            <h1>Сайт: {{ url[1] }}</h1>
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
@@ -41,15 +41,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ url.id }}</td>
-                        <td>{{ url.name }}</td>
-                        <td>{{ url.created_at }}</td>
+                        <td>{{ url[0] }}</td>
+                        <td>{{ url[1] }}</td>
+                        <td>{{ url[2] }}</td>
                     </tr>
                 </tbody>
             </table>
 
             <h2>Проверки</h2>
-            <form method="POST" action="{{ url_for('check_url', url_id=url.id) }}">
+            <form method="POST" action="{{ url_for('check_url', url_id=url[0]) }}">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
 
@@ -64,8 +64,8 @@
                 <tbody>
                     {% for check in checks %}
                     <tr>
-                        <td>{{ check.id }}</td>
-                        <td>{{ check.created_at }}</td>
+                        <td>{{ check[0] }}</td>
+                        <td>{{ check[1] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
