@@ -60,3 +60,40 @@ def get_urls():
             return result
         except psycopg2.Error:
             return None
+
+
+def create_check(url_id):
+    with DatabaseConnection() as db:
+        try:
+            db.execute("INSERT INTO url_checks"
+                       "(url_id, created_at) VALUES (%s, %s);",
+                       (url_id, datetime.datetime.now()))
+            return True
+        except psycopg2.Error:
+            print('Ошибка при создании проверки')
+            return False
+
+
+def get_checks_by_url_id(url_id):
+    with DatabaseConnection() as db:
+        try:
+            db.execute("SELECT id, created_at FROM url_checks "
+                       "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
+            result = db.fetchall()
+            return result
+        except psycopg2.Error:
+            print('Ошибка при получении списка проверок')
+            return []
+
+
+def get_last_check_date(url_id):
+    with DatabaseConnection() as db:
+        try:
+            db.execute("SELECT created_at FROM url_checks "
+                       "WHERE url_id = %s ORDER BY "
+                       "created_at DESC LIMIT 1", (url_id,))
+            result = db.fetchone()
+            return result[0] if result else None
+        except psycopg2.Error:
+            print('Ошибка при выборе даты последней проверки')
+            return None
