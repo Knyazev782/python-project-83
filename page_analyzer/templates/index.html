@@ -32,7 +32,7 @@
                 {% endif %}
             {% endwith %}
 
-            <form method="POST" action="{{ url_for('add_url') }}">
+            <form method="POST" action="{{ url_for('index') }}">  <!-- Исправлено на 'index' -->
                 <div class="mb-3">
                     <label for="url" class="form-label">Сайт</label>
                     <input type="text" class="form-control" id="url" name="url" value="{{ request.form.url or '' }}" required>
