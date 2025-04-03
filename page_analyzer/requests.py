@@ -95,8 +95,11 @@ def get_last_check_date(url_id):
                        "WHERE url_id = %s ORDER BY "
                        "created_at DESC LIMIT 1", (url_id,))
             result = db.fetchone()
-            return result[0].strftime('%Y-%m-%d %H:%M:%S'), result[1] \
-                if result and result[0] else (None, None)
+            if result is None:
+                return None, None
+            else:
+                return result[0].strftime('%Y-%m-%d %H:%M:%S'), result[1] \
+                    if result and result[0] else (None, None)
         except psycopg2.Error:
             print('Ошибка при выборе даты последней проверки')
             return None, None
@@ -110,4 +113,3 @@ def check_website(url):
     except requests.exceptions.RequestException:
         print('Произошла ошибка получения ответа')
         return None
-
