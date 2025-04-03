@@ -14,4 +14,5 @@ CREATE TABLE IF NOT EXISTS url_checks (
     description VARCHAR(255),
     created_at TIMESTAMP NOT NULL,
     FOREIGN KEY (url_id) REFERENCES urls(id)
+    status_code INTEGER
 );

@@ -1,51 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анализатор страниц</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Анализатор страниц</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="p-3">
-        <div class="container">
-            <nav class="d-flex flex-wrap align-items-center justify-content-between">
-                <a href="{{ url_for('index') }}" class="fs-4 text-decoration-none">Анализатор страниц</a>
-                <ul class="nav">
-                    <li class="nav-item"><a href="{{ url_for('list_urls') }}" class="nav-link">Сайты</a></li>
-                </ul>
-            </nav>
+  <div class="container mt-5">
+    <h1>Анализатор страниц</h1>
+    <form method="post" action="{{ url_for('index') }}">
+      <div class="mb-3">
+        <label for="url" class="form-label">Сайт</label>
+        <input type="text" class="form-control" id="url" name="url" placeholder="https://example.com" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Проверить</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-info mt-3">
+          {% for message in messages %}
+            {{ message }}<br>
+          {% endfor %}
         </div>
-    </header>
-
-    <main>
-        <div class="container mt-5">
-            <h1>Анализатор страниц</h1>
-            <p class="lead">Бесплатно проверьте сайты на SEO пригодность</p>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-info" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <form method="POST" action="{{ url_for('index') }}">
-                <div class="mb-3">
-                    <label for="url" class="form-label">Сайт</label>
-                    <input type="text" class="form-control" id="url" name="url" value="{{ request.form.url or '' }}" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Проверить</button>
-            </form>
-        </div>
-    </main>
-
-    <footer class="p-3 mt-5 border-top">
-        <div class="container text-center">
-            <p>© 2025 Анализатор страниц</p>
-        </div>
-    </footer>
+      {% endif %}
+    {% endwith %}
+    <h2 class="mt-5">Список сайтов</h2>
+    <p><a href="{{ url_for('list_urls') }}">Перейти к списку сайтов</a></p>
+  </div>
 </body>
 </html>

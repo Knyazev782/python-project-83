@@ -5,7 +5,7 @@ from page_analyzer.requests import (check_url_exists,
                                     add_url, get_url_id,
                                     get_url_by_id, get_urls, create_check,
                                     get_checks_by_url_id,
-                                    get_last_check_date)
+                                    get_last_check_date, check_website)
 
 
 def validate_url_input(url):
@@ -53,7 +53,8 @@ def show_url(url_id):
     url_data = get_url_by_id(url_id)
     if url_data is not None:
         checks = get_checks_by_url_id(url_id)
-        return render_template('url.html', url=url_data, checks=checks)
+        return render_template('url.html',
+                               url=url_data, checks=checks)
     flash('Страница не найдена')
     return redirect(url_for('index'))
 
@@ -68,19 +69,25 @@ def list_urls():
             last_checks.append({'id': url[0],
                                 'name': url[1],
                                 'created_at': url[2],
-                                'last_check': last_check})
+                                'last_check': last_check,
+                                'status_code':last_check[1]})
     else:
         return render_template('urls.html', urls=[])
 
-    return render_template('urls.html', urls=last_checks)
+    return render_template('urls.html',
+                           urls=last_checks)
 
 
 @app.route('/urls/<int:url_id>/checks', methods=['POST'])
 def check_url(url_id):
-    if get_url_by_id(url_id) is None:
+    url_data = get_url_by_id(url_id)
+    if url_data is None:
         flash('URL не найден')
         return redirect(url_for('index'))
-    if create_check(url_id) is True:
+    status_code = check_website(url_data[1])
+    if status_code is None:
+        flash("Произошла ошибка при проверке")
+    elif create_check(url_id, status_code):
         flash("Проверка успешно создана")
     else:
         flash("Не удалось создать проверку")

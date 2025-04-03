@@ -1,63 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анализатор страниц</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Список сайтов</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="p-3">
-        <div class="container">
-            <nav class="d-flex flex-wrap align-items-center justify-content-between">
-                <a href="{{ url_for('index') }}" class="fs-4 text-decoration-none">Анализатор страниц</a>
-                <ul class="nav">
-                    <li class="nav-item"><a href="{{ url_for('list_urls') }}" class="nav-link">Сайты</a></li>
-                </ul>
-            </nav>
+  <div class="container mt-5">
+    <h1>Сайты</h1>
+    <p><a href="{{ url_for('index') }}">Вернуться на главную</a></p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-info mt-3">
+          {% for message in messages %}
+            {{ message }}<br>
+          {% endfor %}
         </div>
-    </header>
-
-    <main>
-        <div class="container mt-5">
-            <h1>Сайты</h1>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-info" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <table class="table" data-test="urls">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Имя</th>
-                        <th>Дата создания</th>
-                        <th>Последняя проверка</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for url in urls %}
-                    <tr>
-                        <td>{{ url.id }}</td>
-                        <td><a href="{{ url_for('show_url', url_id=url.id) }}">{{ url.name }}</a></td>
-                        <td>{{ url.created_at }}</td>
-                        <td>{{ url.last_check if url.last_check else '-' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <footer class="p-3 mt-5 border-top">
-        <div class="container text-center">
-            <p>© 2025 Анализатор страниц</p>
-        </div>
-    </footer>
+      {% endif %}
+    {% endwith %}
+    <table class="table" data-test="urls">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Имя</th>
+          <th scope="col">Дата создания</th>
+          <th scope="col">Последняя проверка</th>
+          <th scope="col">Код ответа</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for url in urls %}
+          <tr>
+            <td>{{ url.id }}</td>
+            <td><a href="{{ url_for('show_url', url_id=url.id) }}">{{ url.name }}</a></td>
+            <td>{{ url.created_at }}</td>
+            <td>{{ url.last_check[0] if url.last_check[0] else '-' }}</td>
+            <td>{{ url.last_check[1] if url.last_check[1] else '-' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
