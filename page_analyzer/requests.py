@@ -2,6 +2,7 @@ from .db import DatabaseConnection
 import datetime
 import psycopg2
 import requests
+from bs4 import BeautifulSoup
 
 
 def check_url_exists(url):
@@ -63,12 +64,14 @@ def get_urls():
             return None
 
 
-def create_check(url_id, status_code):
+def create_check(url_id, status_code, h1, title, description):
     with DatabaseConnection() as db:
         try:
             db.execute("INSERT INTO url_checks"
-                       "(url_id, created_at, status_code) VALUES (%s, %s, %s);",
-                       (url_id, datetime.datetime.now(), status_code))
+                       "(url_id, created_at, status_code, "
+                       "h1, title, description) VALUES (%s, %s, %s, %s, %s, %s);",
+                       (url_id, datetime.datetime.now(),
+                        status_code, h1, title, description))
             return True
         except psycopg2.Error:
             print('Ошибка при создании проверки')
@@ -78,11 +81,13 @@ def create_check(url_id, status_code):
 def get_checks_by_url_id(url_id):
     with DatabaseConnection() as db:
         try:
-            db.execute("SELECT id, created_at, status_code FROM url_checks "
+            db.execute("SELECT id, created_at, status_code, "
+                       "h1, title, description FROM url_checks "
                        "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
             return [(check[0], check[1].strftime('%Y-%m-%d %H:%M:%S')
-            if check[1] else None, check[2]) for check in result]
+            if check[1] else None, check[2], check[3],
+                     check[4], check[5]) for check in result]
         except psycopg2.Error:
             print('Ошибка при получении списка проверок')
             return []
@@ -109,7 +114,24 @@ def check_website(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        return response.status_code
+        html = response.text
+        soup = BeautifulSoup(html, 'html.parser')
+        h1_tag = None
+        title_tag = None
+        meta_tag = None
+        if soup.find('h1'):
+            h1_tag = soup.find('h1').get_text(strip=True)
+
+        if soup.find('title'):
+            title_tag = soup.find('title').get_text(strip=True)
+
+        if soup.find('meta', attrs={'name': 'description'}):
+           meta_tag = soup.find('meta',
+                    attrs={'name': 'description'}).get('content')
+
+        return response.status_code, h1_tag, title_tag, meta_tag
     except requests.exceptions.RequestException:
         print('Произошла ошибка получения ответа')
-        return None
+        return None, None, None, None
+
+

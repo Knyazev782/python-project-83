@@ -84,10 +84,14 @@ def check_url(url_id):
     if url_data is None:
         flash('URL не найден')
         return redirect(url_for('index'))
-    status_code = check_website(url_data[1])
+    check_result = check_website(url_data[1])
+    status_code = check_result[0]
+    h1 = check_result[1]
+    title = check_result[2]
+    description = check_result[3]
     if status_code is None:
         flash("Произошла ошибка при проверке")
-    elif create_check(url_id, status_code):
+    elif create_check(url_id, status_code, h1, title, description):
         flash("Проверка успешно создана")
     else:
         flash("Не удалось создать проверку")

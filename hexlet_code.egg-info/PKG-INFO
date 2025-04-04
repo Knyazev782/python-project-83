@@ -10,3 +10,4 @@ Requires-Dist: flake8>=6.0.0
 Requires-Dist: psycopg2-binary>=2.9.0
 Requires-Dist: validators>=0.20.0
 Requires-Dist: requests>=2.32.3
+Requires-Dist: beautifulsoup4>=4.13.3
