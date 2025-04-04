@@ -70,7 +70,7 @@ def list_urls():
                                 'name': url[1],
                                 'created_at': url[2],
                                 'last_check': last_check,
-                                'status_code':last_check[1]})
+                                'status_code': last_check[1]})
     else:
         return render_template('urls.html', urls=[])
 

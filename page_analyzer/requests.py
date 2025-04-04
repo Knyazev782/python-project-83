@@ -34,7 +34,7 @@ def add_url(url):
             db.execute("""
                 INSERT INTO urls (name, created_at)
                 VALUES (%s, %s);
-            """, (url, datetime.datetime.now()))
+            """, (url, datetime.datetime.now().replace(microsecond=0)))
             return True
         except psycopg2.IntegrityError:
             print(f"URL {url} уже существует в нашей базе")
@@ -69,8 +69,9 @@ def create_check(url_id, status_code, h1, title, description):
         try:
             db.execute("INSERT INTO url_checks"
                        "(url_id, created_at, status_code, "
-                       "h1, title, description) VALUES (%s, %s, %s, %s, %s, %s);",
-                       (url_id, datetime.datetime.now(),
+                       "h1, title, description) "
+                       "VALUES (%s, %s, %s, %s, %s, %s);",
+                       (url_id, datetime.datetime.now().replace(microsecond=0),
                         status_code, h1, title, description))
             return True
         except psycopg2.Error:
@@ -86,7 +87,7 @@ def get_checks_by_url_id(url_id):
                        "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
             return [(check[0], check[1].strftime('%Y-%m-%d %H:%M:%S')
-            if check[1] else None, check[2], check[3],
+                    if check[1] else None, check[2], check[3],
                      check[4], check[5]) for check in result]
         except psycopg2.Error:
             print('Ошибка при получении списка проверок')
@@ -126,12 +127,10 @@ def check_website(url):
             title_tag = soup.find('title').get_text(strip=True)
 
         if soup.find('meta', attrs={'name': 'description'}):
-           meta_tag = soup.find('meta',
-                    attrs={'name': 'description'}).get('content')
+            meta_tag = soup.find('meta',
+                                 attrs={'name': 'description'}).get('content')
 
         return response.status_code, h1_tag, title_tag, meta_tag
     except requests.exceptions.RequestException:
         print('Произошла ошибка получения ответа')
         return None, None, None, None
-
-
