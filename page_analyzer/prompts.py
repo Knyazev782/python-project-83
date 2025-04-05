@@ -3,7 +3,9 @@ import datetime
 import psycopg2
 import requests
 from bs4 import BeautifulSoup
+from flask import Blueprint
 
+prompts = Blueprint('prompts', __name__)
 
 def check_url_exists(url):
     with DatabaseConnection() as db:
@@ -13,7 +15,6 @@ def check_url_exists(url):
             return result is not None
         except psycopg2.Error:
             return False
-
 
 def get_url_id(url):
     with DatabaseConnection() as db:
@@ -27,7 +28,6 @@ def get_url_id(url):
         except psycopg2.Error:
             return None
 
-
 def add_url(url):
     with DatabaseConnection() as db:
         try:
@@ -39,7 +39,6 @@ def add_url(url):
         except psycopg2.IntegrityError:
             print(f"URL {url} уже существует в нашей базе")
             return False
-
 
 def get_url_by_id(url_id):
     with DatabaseConnection() as db:
@@ -53,7 +52,6 @@ def get_url_by_id(url_id):
         except psycopg2.Error:
             return None
 
-
 def get_urls():
     with DatabaseConnection() as db:
         try:
@@ -62,7 +60,6 @@ def get_urls():
             return result
         except psycopg2.Error:
             return None
-
 
 def create_check(url_id, status_code, h1, title, description):
     with DatabaseConnection() as db:
@@ -78,7 +75,6 @@ def create_check(url_id, status_code, h1, title, description):
             print('Ошибка при создании проверки')
             return False
 
-
 def get_checks_by_url_id(url_id):
     with DatabaseConnection() as db:
         try:
@@ -86,13 +82,15 @@ def get_checks_by_url_id(url_id):
                        "h1, title, description FROM url_checks "
                        "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
-            return [(check[0], check[1].strftime('%Y-%m-%d %H:%M:%S')
-                    if check[1] else None, check[2], check[3],
-                     check[4], check[5]) for check in result]
+            return [(check[0],
+                     check[1].strftime('%Y-%m-%d %H:%M:%S') if check[1] else None,
+                     check[2],
+                     check[3],
+                     check[4],
+                     check[5]) for check in result]
         except psycopg2.Error:
             print('Ошибка при получении списка проверок')
             return []
-
 
 def get_last_check_date(url_id):
     with DatabaseConnection() as db:
@@ -110,7 +108,6 @@ def get_last_check_date(url_id):
             print('Ошибка при выборе даты последней проверки')
             return None, None
 
-
 def check_website(url):
     try:
         response = requests.get(url)
@@ -122,15 +119,12 @@ def check_website(url):
         meta_tag = None
         if soup.find('h1'):
             h1_tag = soup.find('h1').get_text(strip=True)
-
         if soup.find('title'):
             title_tag = soup.find('title').get_text(strip=True)
-
         if soup.find('meta', attrs={'name': 'description'}):
             meta_tag = soup.find('meta',
                                  attrs={'name': 'description'}).get('content')
-
         return response.status_code, h1_tag, title_tag, meta_tag
-    except requests.exceptions.RequestException:
-        print('Произошла ошибка получения ответа')
+    except requests.exceptions.RequestException as e:
+        print(f'Произошла ошибка получения ответа: {e}')
         return None, None, None, None
