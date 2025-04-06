@@ -18,7 +18,7 @@ def validate_url_input(url):
 def process_url(url):
     if check_url_exists(url):
         flash('Страница уже существует')
-        return None
+        return get_url_id(url)
     if add_url(url):
         url_id = get_url_id(url)
         if url_id is not None:
@@ -53,8 +53,7 @@ def show_url(url_id):
     url_data = get_url_by_id(url_id)
     if url_data is not None:
         checks = get_checks_by_url_id(url_id)
-        return render_template('url.html',
-                               url=url_data, checks=checks)
+        return render_template('url.html', url=url_data, checks=checks)
     flash('Страница не найдена')
     return redirect(url_for('index'))
 
@@ -66,16 +65,16 @@ def list_urls():
     if urls is not None:
         for url in urls:
             last_check = get_last_check_date(url[0])
-            last_checks.append({'id': url[0],
-                                'name': url[1],
-                                'created_at': url[2],
-                                'last_check': last_check,
-                                'status_code':last_check[1]})
+            last_checks.append({
+                'id': url[0],
+                'name': url[1],
+                'created_at': url[2],
+                'last_check': last_check[0] if last_check else None,
+                'status_code': last_check[1] if last_check else None
+            })
     else:
         return render_template('urls.html', urls=[])
-
-    return render_template('urls.html',
-                           urls=last_checks)
+    return render_template('urls.html', urls=last_checks)
 
 
 @app.route('/urls/<int:url_id>/checks', methods=['POST'])
@@ -90,9 +89,9 @@ def check_url(url_id):
     title = check_result[2]
     description = check_result[3]
     if status_code is None:
-        flash("Произошла ошибка при проверке")
+        flash("Прошла ошибка при проверке")
     elif create_check(url_id, status_code, h1, title, description):
         flash("Проверка успешно создана")
     else:
-        flash("Не удалось создать проверку")
+        flash("Не удалось создать проверку. Проверьте логи для деталей.")
     return redirect(url_for('show_url', url_id=url_id))
