@@ -16,4 +16,4 @@ build:
 	./build.sh
 
 render-start:
-	.venv/bin/gunicorn -w 5 -b 0.0.0.0:8000 page_analyzer:app
+	.venv/bin/gunicorn -w 5 -b 0.0.0.0:8001 page_analyzer:app
