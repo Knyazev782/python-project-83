@@ -1,4 +1,4 @@
-from page_analyzer import app
+from page_analyzer.app import app
 from flask import request, flash, render_template, redirect, url_for
 from validators import url as validate_url
 from page_analyzer.prompts import (check_url_exists,
