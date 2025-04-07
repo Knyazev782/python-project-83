@@ -1,11 +1,11 @@
 from page_analyzer import app
 from flask import request, flash, render_template, redirect, url_for
 from validators import url as validate_url
-from page_analyzer.requests import (check_url_exists,
-                                    add_url, get_url_id,
-                                    get_url_by_id, get_urls, create_check,
-                                    get_checks_by_url_id,
-                                    get_last_check_date, check_website)
+from page_analyzer.prompts import (check_url_exists,
+                                   add_url, get_url_id,
+                                   get_url_by_id, get_urls, create_check,
+                                   get_checks_by_url_id,
+                                   get_last_check_date, check_website)
 
 
 def validate_url_input(url):

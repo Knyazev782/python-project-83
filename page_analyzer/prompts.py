@@ -49,13 +49,14 @@ def add_url(url):
 
 
 def get_url_by_id(url_id):
-    with DatabaseConnection() as db:
+    with (DatabaseConnection() as db):
         try:
             db.execute("SELECT * FROM urls WHERE id = %s;", (url_id,))
             result = db.fetchone()
             if result is not None:
 
-                return result[0], result[1], result[2].strftime('%Y-%m-%d %H:%M:%S')
+                return result[0], result[1], \
+                    result[2].strftime('%Y-%m-%d %H:%M')
             else:
                 return None
         except psycopg2.Error as e:
@@ -69,7 +70,9 @@ def get_urls():
             db.execute("SELECT * FROM urls ORDER BY created_at DESC;")
             result = db.fetchall()
 
-            return [(row[0], row[1], row[2].strftime('%Y-%m-%d %H:%M:%S')) for row in result]
+            return [(row[0], row[1],
+                     row[2].strftime('%Y-%m-%d %H:%M'))
+                    for row in result]
         except psycopg2.Error as e:
             print(f'Ошибка при получении списка URL: {e}')
             return None
@@ -78,14 +81,15 @@ def get_urls():
 def create_check(url_id, status_code, h1, title, description):
     with DatabaseConnection() as db:
         try:
-            h1 = h1[:255] if h1 else None
-            title = title[:255] if title else None
-            description = description[:255] if description else None
+            h1 = h1 if h1 else None
+            title = title if title else None
+            description = description if description else None
 
             now = datetime.datetime.now().replace(microsecond=0)
             db.execute("INSERT INTO url_checks"
                        "(url_id, created_at, status_code, "
-                       "h1, title, description) VALUES (%s, %s, %s, %s, %s, %s);",
+                       "h1, title, description) "
+                       "VALUES (%s, %s, %s, %s, %s, %s);",
                        (url_id, now, status_code, h1, title, description))
             return True
         except psycopg2.Error as e:
@@ -98,9 +102,10 @@ def get_checks_by_url_id(url_id):
         try:
             db.execute("SELECT id, created_at, status_code, "
                        "h1, title, description FROM url_checks "
-                       "WHERE url_id = %s ORDER BY created_at DESC", (url_id,))
+                       "WHERE url_id = %s "
+                       "ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
-            return [(check[0], check[1].strftime('%Y-%m-%d %H:%M:%S')
+            return [(check[0], check[1].strftime('%Y-%m-%d %H:%M')
             if check[1] else None, check[2], check[3],
                      check[4], check[5]) for check in result]
         except psycopg2.Error as e:
@@ -118,7 +123,7 @@ def get_last_check_date(url_id):
             if result is None:
                 return None, None
             else:
-                return result[0].strftime('%Y-%m-%d %H:%M:%S'), result[1]
+                return result[0].strftime('%Y-%m-%d %H:%M'), result[1]
         except psycopg2.Error as e:
             print(f'Ошибка при выборе даты последней проверки: {e}')
             return None, None

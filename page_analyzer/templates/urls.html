@@ -62,8 +62,8 @@
               <td>{{ url.id }}</td>
               <td><a href="{{ url_for('show_url', url_id=url.id) }}">{{ url.name }}</a></td>
               <td>{{ url.created_at }}</td>
-              <td>{{ url.last_check[0] if url.last_check[0] else '-' }}</td>
-              <td>{{ url.last_check[1] if url.last_check[1] else '-' }}</td>
+              <td>{{ url.last_check if url.last_check is not none and url.last_check else '-' }}</td>
+              <td>{{ url.status_code if url.status_code is not none and url.status_code else '-' }}</td>
             </tr>
           {% endfor %}
         </tbody>
