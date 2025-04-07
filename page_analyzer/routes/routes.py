@@ -91,7 +91,7 @@ def check_url(url_id):
     if status_code is None:
         flash("Прошла ошибка при проверке")
     elif create_check(url_id, status_code, h1, title, description):
-        flash("Проверка успешно создана")
+        flash("Страница успешно проверена")
     else:
         flash("Не удалось создать проверку. Проверьте логи для деталей.")
     return redirect(url_for('show_url', url_id=url_id))
