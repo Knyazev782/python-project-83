@@ -7,7 +7,7 @@ dev:
 lint:
 	.venv/bin/flake8 .
 
-PORT ?= 8000
+PORT ?= 8001
 start:
 	.venv/bin/gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 
