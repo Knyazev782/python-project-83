@@ -1,5 +1,6 @@
 from page_analyzer.app import app
-from flask import request, flash, render_template, redirect, url_for, get_flashed_messages
+from flask import (request, flash, render_template,
+                   redirect, url_for, get_flashed_messages)
 from validators import url as validate_url
 from page_analyzer.prompts import (check_url_exists, add_url, get_url_id,
                                    get_url_by_id, get_urls, create_check,
@@ -46,7 +47,7 @@ def index():
         url = request.form['url']
         if not validate_url_input(url):
             flash("Некорректный URL")
-            return redirect(url_for('list_urls'))  # Редирект на /urls без параметров
+            return redirect(url_for('list_urls'))
 
         url_id = process_url(url)
         if url_id is not None:
@@ -71,7 +72,6 @@ def list_urls():
             'status_code': last_check[1] if last_check else None
         })
 
-    # Если есть flash-сообщение "Некорректный URL", возвращаем код 422
     if "Некорректный URL" in get_flashed_messages():
         return render_template('urls.html', urls=last_checks), 422
 
@@ -83,7 +83,8 @@ def show_url(url_id):
     url_data = get_url_by_id(url_id)
     if url_data is not None:
         checks = get_checks_by_url_id(url_id)
-        return render_template('url.html', url=url_data, checks=checks)
+        return render_template('url.html',
+                               url=url_data, checks=checks)
     flash('Страница не найдена')
     return redirect(url_for('index'))
 
