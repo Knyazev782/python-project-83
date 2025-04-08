@@ -47,7 +47,7 @@ def index():
         url = request.form['url']
         if not validate_url_input(url):
             flash("Некорректный URL")
-            return redirect (url_for('list_urls', redirect_to_urls=True))
+            return redirect(url_for('list_urls', error='true'))  # Редирект с параметром error
 
         url_id = process_url(url)
         if url_id is not None:
@@ -81,6 +81,10 @@ def list_urls():
             'last_check': last_check[0] if last_check else None,
             'status_code': last_check[1] if last_check else None
         })
+
+    # Проверяем параметр error
+    if request.args.get('error') == 'true':
+        return render_template('urls.html', urls=last_checks), 422
 
     return render_template('urls.html', urls=last_checks)
 
