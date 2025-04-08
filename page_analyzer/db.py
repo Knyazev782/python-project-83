@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://vipknyaz1488:pass@localhost:5432/postgres')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:pass@postgres:5432/postgres')
 
 
 class DatabaseConnection:
