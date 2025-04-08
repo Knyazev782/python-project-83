@@ -1,11 +1,11 @@
 from page_analyzer.app import app
 from flask import request, flash, render_template, redirect, url_for
 from validators import url as validate_url
-from page_analyzer.prompts import (check_url_exists,
-                                   add_url, get_url_id,
+from page_analyzer.prompts import (check_url_exists, add_url, get_url_id,
                                    get_url_by_id, get_urls, create_check,
-                                   get_checks_by_url_id,
-                                   get_last_check_date, check_website)
+                                   get_checks_by_url_id, get_last_check_date,
+                                   check_website)
+from urllib.parse import urlparse
 
 
 def validate_url_input(url):
@@ -15,12 +15,18 @@ def validate_url_input(url):
     return True
 
 
+def normalize_url(url):
+    parsed_url = urlparse(url)
+    return f"{parsed_url.scheme}://{parsed_url.netloc}/"
+
+
 def process_url(url):
-    if check_url_exists(url):
+    normalized_url = normalize_url(url)
+    if check_url_exists(normalized_url):
         flash('Страница уже существует')
-        return get_url_id(url)
-    if add_url(url):
-        url_id = get_url_id(url)
+        return get_url_id(normalized_url)
+    if add_url(normalized_url):
+        url_id = get_url_id(normalized_url)
         if url_id is not None:
             flash('Страница успешно добавлена')
             return url_id
