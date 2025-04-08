@@ -46,7 +46,7 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         if not validate_url_input(url):
-            return render_template('index.html')
+            return redirect(url_for('list_urls'))
 
         url_id = process_url(url)
         if url_id is not None:
@@ -89,15 +89,12 @@ def check_url(url_id):
     if url_data is None:
         flash('URL не найден')
         return redirect(url_for('index'))
-    check_result = check_website(url_data[1])
-    status_code = check_result[0]
-    h1 = check_result[1]
-    title = check_result[2]
-    description = check_result[3]
+    status_code, h1, title, description = check_website(url_data[1])
     if status_code is None:
-        flash("Прошла ошибка при проверке")
-    elif create_check(url_id, status_code, h1, title, description):
+        flash("Произошла ошибка при проверке")
+        return redirect(url_for('show_url', url_id=url_id))
+    if create_check(url_id, status_code, h1, title, description):
         flash("Страница успешно проверена")
     else:
-        flash("Не удалось создать проверку. Проверьте логи для деталей.")
+        flash("Не удалось создать проверку.")
     return redirect(url_for('show_url', url_id=url_id))
