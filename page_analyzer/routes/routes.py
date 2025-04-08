@@ -1,5 +1,5 @@
 from page_analyzer.app import app
-from flask import request, flash, render_template, redirect, url_for, make_response
+from flask import request, flash, render_template, redirect, url_for
 from validators import url as validate_url
 from page_analyzer.prompts import (check_url_exists, add_url, get_url_id,
                                    get_url_by_id, get_urls, create_check,
@@ -82,8 +82,6 @@ def list_urls():
             'status_code': last_check[1] if last_check else None
         })
 
-    if request.args.get('error'):
-        return render_template('urls.html', urls=last_checks), 422
     return render_template('urls.html', urls=last_checks)
 
 
