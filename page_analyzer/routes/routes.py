@@ -1,5 +1,5 @@
 from page_analyzer.app import app
-from flask import request, flash, render_template, redirect, url_for
+from flask import request, flash, render_template, redirect, url_for, make_response
 from validators import url as validate_url
 from page_analyzer.prompts import (check_url_exists, add_url, get_url_id,
                                    get_url_by_id, get_urls, create_check,
@@ -46,7 +46,8 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         if not validate_url_input(url):
-            return redirect(url_for('list_urls'))
+            response = make_response(render_template('index.html'), 422)
+            return response
 
         url_id = process_url(url)
         if url_id is not None:
@@ -66,20 +67,20 @@ def show_url(url_id):
 
 @app.route('/urls')
 def list_urls():
-    urls = get_urls()
-    last_checks = []
-    if urls is not None:
-        for url in urls:
-            last_check = get_last_check_date(url[0])
-            last_checks.append({
-                'id': url[0],
-                'name': url[1],
-                'created_at': url[2],
-                'last_check': last_check[0] if last_check else None,
-                'status_code': last_check[1] if last_check else None
-            })
-    else:
+    urls_data = get_urls()
+    if urls_data is None:
         return render_template('urls.html', urls=[])
+
+    last_checks = []
+    for url in urls_data:
+        last_check = get_last_check_date(url[0])
+        last_checks.append({
+            'id': url[0],
+            'name': url[1],
+            'created_at': url[2],
+            'last_check': last_check[0] if last_check else None,
+            'status_code': last_check[1] if last_check else None
+        })
     return render_template('urls.html', urls=last_checks)
 
 
