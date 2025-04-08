@@ -46,7 +46,8 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         if not validate_url_input(url):
-            response = make_response(render_template('index.html'), 422)
+            response = make_response("", 422)
+            response.headers['Location'] = url_for('list_urls')
             return response
 
         url_id = process_url(url)
