@@ -64,16 +64,6 @@ def show_url(url_id):
     return redirect(url_for('index'))
 
 
-@app.route('/urls/<int:url_id>')
-def show_url(url_id):
-    url_data = get_url_by_id(url_id)
-    if url_data is not None:
-        checks = get_checks_by_url_id(url_id)
-        return render_template('url.html', url=url_data, checks=checks)
-    flash('Страница не найдена')
-    return redirect(url_for('index'))
-
-
 @app.route('/urls')
 def list_urls():
     urls_data = get_urls()
