@@ -46,13 +46,22 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         if not validate_url_input(url):
-            response = make_response(render_template('index.html'), 422)
+            response = make_response(redirect(url_for('list_urls')), 422)
             return response
 
         url_id = process_url(url)
         if url_id is not None:
             return redirect(url_for('show_url', url_id=url_id))
     return render_template('index.html')
+
+@app.route('/urls/<int:url_id>')
+def show_url(url_id):
+    url_data = get_url_by_id(url_id)
+    if url_data is not None:
+        checks = get_checks_by_url_id(url_id)
+        return render_template('url.html', url=url_data, checks=checks)
+    flash('Страница не найдена')
+    return redirect(url_for('index'))
 
 
 @app.route('/urls/<int:url_id>')
