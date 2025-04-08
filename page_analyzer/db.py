@@ -3,7 +3,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:pass@localhost:5432/postgres')
+default_db_url = 'postgresql://postgres:postgres@db:5432/postgres' if os.getenv(
+    'CI') else 'postgresql://postgres:pass@localhost:5432/postgres'
+DATABASE_URL = os.getenv('DATABASE_URL', default_db_url)
 
 
 class DatabaseConnection:
