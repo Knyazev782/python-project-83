@@ -46,9 +46,8 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         if not validate_url_input(url):
-            response = make_response("", 422)
-            response.headers['Location'] = url_for('list_urls')
-            return response
+            flash("Некорректный URL")
+            return redirect(url_for('list_urls'), code=302)
 
         url_id = process_url(url)
         if url_id is not None:
