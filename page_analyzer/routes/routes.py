@@ -47,7 +47,7 @@ def index():
         url = request.form['url']
         if not validate_url_input(url):
             flash("Некорректный URL")
-            return render_template('index.html', redirect_to_urls=True), 422
+            return render_template('urls.html', redirect_to_urls=True), 422
 
         url_id = process_url(url)
         if url_id is not None:
