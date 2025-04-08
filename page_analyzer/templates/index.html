@@ -72,5 +72,11 @@
             {% endwith %}
         </div>
     </div>
+
+    {% if redirect_to_urls %}
+    <script>
+        window.location.href = "{{ url_for('list_urls') }}";
+    </script>
+    {% endif %}
 </body>
 </html>
