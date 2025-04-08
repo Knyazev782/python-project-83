@@ -106,7 +106,7 @@ def get_checks_by_url_id(url_id):
                        "ORDER BY created_at DESC", (url_id,))
             result = db.fetchall()
             return [(check[0], check[1].strftime('%Y-%m-%d %H:%M')
-                    if check[1] else None, check[2], check[3],
+                     if check[1] else None, check[2], check[3],
                      check[4], check[5]) for check in result]
         except psycopg2.Error as e:
             print(f'Ошибка при получении списка проверок: {e}')
